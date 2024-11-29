@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class ProductServiceTest {
-    
+
     private final static String PRODUCT_NAME = "Test Product";
     private final static String UPDATED_PRODUCT_NAME = "Updated Product";
     private final static Double PRODUCT_PRICE = 100.0;
