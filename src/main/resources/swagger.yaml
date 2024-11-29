@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+  title: Product Management API
+  version: 1.0.0
+  description: RESTful API to create, list, retrieve, update, and delete products.
+servers:
+  - url: http://localhost:8080/api
+paths:
+
+  /products:
+    get:
+      summary: List Products
+      description: Returns a list of all registered products.
+      responses:
+        '200':
+          description: Successfully retrieved the list of products.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+
+    post:
+      summary: Create Product
+      description: Creates a new product with the given name and price.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '201':
+          description: Product successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid data provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /products/{id}:
+    get:
+      summary: Get Product by ID
+      description: Returns the details of a specific product by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique ID of the product.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Update Product
+      description: Updates the name and/or price of an existing product.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique ID of the product.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '200':
+          description: Product successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete Product
+      description: Removes an existing product by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique ID of the product.
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Product successfully deleted.
+        '404':
+          description: Product not found.
+
+components:
+  schemas:
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique ID of the product.
+          example: 1
+        name:
+          type: string
+          description: Name of the product.
+          example: "Sample Product"
+        price:
+          type: number
+          format: double
+          description: Price of the product.
+          example: 99.99
+
+    ProductRequest:
+      type: object
+      required:
+        - name
+        - price
+      properties:
+        name:
+          type: string
+          description: Name of the product.
+          minLength: 3
+          maxLength: 100
+          example: "Sample Product"
+        price:
+          type: number
+          format: double
+          description: Price of the product. Must be positive.
+          example: 99.99
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code.
+          example: "404"
+        description:
+          type: string
+          description: Error description.
+          example: "Product not found."
